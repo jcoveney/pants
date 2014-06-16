@@ -148,6 +148,7 @@ python_library(
   dependencies = [
     pants(':common'),
     pants(':jvm_binary_task'),
+    pants('3rdparty/python/twitter/commons:twitter.common.python'),
     pants('src/python/pants/base:exceptions'),
     pants('src/python/pants/java:jar'),
   ],
