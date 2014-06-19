@@ -9,7 +9,7 @@ import shlex
 
 from twitter.common.dirutil import safe_open
 
-from pants.backend.jvm.targets.jvm_binary import JvmBinary
+from pants.backend.jvm.targets.jvm_binary import JvmApp, JvmBinary
 from pants.backend.jvm.tasks.jvm_task import JvmTask
 from pants.base.exceptions import TaskError
 from pants.base.workunit import WorkUnit
@@ -71,7 +71,12 @@ class JvmRun(JvmTask):
       raise TaskError('No target specified.')
     elif len(target_roots) > 1:
       raise TaskError('Multiple targets specified: %s' % ', '.join([repr(t) for t in target_roots]))
-    binary = target_roots[0]
+
+    target = target_roots[0]
+    if isinstance(target, JvmApp):
+      binary = target.binary
+    else:
+      binary = target
 
     if isinstance(binary, JvmBinary):
       # We can't throw if binary isn't a JvmBinary, because perhaps we were called on a
