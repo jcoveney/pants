@@ -39,7 +39,6 @@ python_test_suite(
     pants(':jar_publish'),
     pants(':jar_task'),
     pants(':jaxb_gen'),
-    pants(':jvm_task'),
     pants(':list_goals'),
     pants(':listtargets'),
     pants(':minimal_cover'),
@@ -58,7 +57,6 @@ python_test_suite(
   dependencies = [
     pants(':jar_publish_integration'),
     pants(':jvm_bundle_integration'),
-    pants(':scala_repl_integration'),
   ],
 )
 
@@ -92,14 +90,6 @@ python_tests(
 python_tests(
   name = 'jvm_bundle_integration',
   sources = ['test_jvm_bundle_integration.py'],
-  dependencies = [
-    pants('tests/python/pants_test:int-test'),
-  ],
-)
-
-python_tests(
-  name = 'scala_repl_integration',
-  sources = ['test_scala_repl_integration.py'],
   dependencies = [
     pants('tests/python/pants_test:int-test'),
   ],
@@ -433,17 +423,6 @@ python_tests(
     pants('src/python/pants/backend/jvm/targets:java'),
     pants('src/python/pants/backend/jvm/targets:scala'),
     pants('src/python/pants/backend/python/targets:python'),
-    pants('tests/python/pants_test:base_test'),
-  ]
-)
-
-python_tests(
-  name = 'jvm_task',
-  sources = ['test_jvm_task.py'],
-  dependencies = [
-    pants('3rdparty/python/twitter/commons:twitter.common.dirutil'),
-    pants('src/python/pants/backend/core/tasks:check_exclusives'),
-    pants('src/python/pants/backend/jvm/tasks:jvm_task'),
     pants('tests/python/pants_test:base_test'),
   ]
 )

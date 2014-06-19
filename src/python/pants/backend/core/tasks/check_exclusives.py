@@ -15,8 +15,6 @@ from pants.base.target import Target
 from pants.backend.core.tasks.task import Task
 
 
-# TODO(benjy): The exclusives implementation needs re-doing. It's too clunky right now.
-
 class CheckExclusives(Task):
   """Computes transitive exclusive maps.
 
