@@ -13,7 +13,7 @@ python_library(
   provides=setup_py(
     name='pantsbuild.pants',
     version=pants_version(),
-    description="Twitter's pants build tool.",
+    description='A bottom-up build tool.',
     url='https://github.com/pantsbuild/pants',
     license='Apache License, Version 2.0',
     zip_safe=True,
@@ -42,11 +42,11 @@ python_library(
   dependencies = [
     pants('3rdparty/python/twitter/commons:twitter.common.collections'),
     pants('3rdparty/python/twitter/commons:twitter.common.contextutil'),
-    pants('3rdparty/python/twitter/commons:twitter.common.dirutil'),
     pants('3rdparty/python/twitter/commons:twitter.common.lang'),
     pants('3rdparty/python/twitter/commons:twitter.common.log'),
     pants('src/python/pants/base:config'),
     pants('src/python/pants/base:exceptions'),
+    pants('src/python/pants/util:dirutil'),
   ],
 )
 
