@@ -33,7 +33,7 @@ page(name="readme",
     wiki_artifact(wiki=pants('//:confluence'),
       space='ENG',
       title='Pants Hello World Example',
-      parent='Examples',
+      parent='pants_page',
     )
   ])
 

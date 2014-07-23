@@ -116,7 +116,7 @@ jar_library(name = 'jar-tool',
 import urllib
 
 def confluence_url_builder(page, config):
-  return config['title'], 'https://wiki.archie.org/display/%s%s' % (
+  return config['title'], 'https://confluence.twitter.biz/display/%s/%s' % (
     config['space'],
     urllib.quote_plus(config['title']))
 

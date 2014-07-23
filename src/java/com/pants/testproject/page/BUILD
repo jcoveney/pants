@@ -7,8 +7,8 @@ page(name="readme",
        provides=[
            wiki_artifact(wiki=pants('//:confluence'),
 	         space='ENG',
-		       title='Linker',
-		             parent='Examples',
+		       title='Linker and Furthermore',
+		             parent='pants_page',
 			         )
 ]
      )
