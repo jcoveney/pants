@@ -133,13 +133,14 @@ class MarkdownToHtml(Task):
       _, ext = os.path.splitext(page.source)
       if ext in self.extensions:
         def process_page(key, outdir, url_builder, config, genmap, fragment=False):
-          html_path = self.process(
+          html_path = self.processlaksdf(
             outdir,
             page.payload.sources_rel_path,
             page.source,
             self.fragment or fragment,
             url_builder,
             config,
+            page.name,
             css=css
           )
           self.context.log.info('Processed %s to %s' % (page.source, html_path))
@@ -148,8 +149,11 @@ class MarkdownToHtml(Task):
           return html_path
 
         def url_builder(linked_page, config=None):
-          path, ext = os.path.splitext(linked_page.source)
-          return linked_page.name, os.path.relpath(path + '.html', os.path.dirname(page.source))
+          print("UB", "SOURCE", linked_page.source, "NAME", linked_page.name, "REL", linked_page.payload.sources_rel_path)
+          dest = os.path.join(linked_page.payload.sources_rel_path,
+                              linked_page.name + ".html")
+          return linked_page.name, os.path.relpath(dest,
+                                                   page.payload.sources_rel_path)
 
         page_path = os.path.join(self.workdir, 'html')
         html = process_page(page, page_path, url_builder, lambda p: None, plaingenmap)
@@ -174,7 +178,9 @@ class MarkdownToHtml(Task):
 
   PANTS_LINK = re.compile(r'''pants\(['"]([^)]+)['"]\)(#.*)?''')
 
-  def process(self, outdir, base, source, fragmented, url_builder, get_config, css=None):
+  def processlaksdf(self, outdir, base, source, fragmented, url_builder, get_config, targname, css=None):
+    print()
+    print("PROCESS", "OUTDIR", outdir, "BASE", base, "SOURCE", source, "FRAGMENTED", fragmented)
     def parse_url(spec):
       match = MarkdownToHtml.PANTS_LINK.match(spec)
       if match:
@@ -200,8 +206,7 @@ class MarkdownToHtml(Task):
 
     wikilinks = WikilinksExtension(build_url)
 
-    path, ext = os.path.splitext(source)
-    output_path = os.path.join(outdir, path + '.html')
+    output_path = os.path.join(outdir, base, targname + '.html')
     safe_mkdir(os.path.dirname(output_path))
     with codecs.open(output_path, 'w', 'utf-8') as output:
       with codecs.open(os.path.join(get_buildroot(), base, source), 'r', 'utf-8') as input:
