@@ -225,10 +225,8 @@ class MarkdownToHtml(Task):
           output.write(md_html)
         else:
           if css:
-            css_relpath = os.path.relpath(css, outdir)
-            out_relpath = os.path.dirname(source)
-            link_relpath = os.path.relpath(css_relpath, out_relpath)
-            css = '<link rel="stylesheet" type="text/css" href="%s"/>' % link_relpath
+            css_relpath = os.path.relpath(css, os.path.dirname(output_path))
+            css = '<link rel="stylesheet" lolwut=12 type="text/css" href="%s"/>' % css_relpath
           html = textwrap.dedent('''
           <html>
             <head>

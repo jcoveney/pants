@@ -112,3 +112,26 @@ jar_library(name = 'jar-tool',
               jar(org = 'com.twitter.common', name = 'jar-tool', rev = '0.1.7')
             ])
 
+
+import urllib
+
+def confluence_url_builder(page, config):
+  return config['title'], 'https://wiki.archie.org/display/%s%s' % (
+    config['space'],
+    urllib.quote_plus(config['title']))
+
+# Use this wiki target's address for the wiki= param in your wiki_artifacts
+confluence = wiki(name="confluence",
+                  url_builder=confluence_url_builder)
+
+class OurConfluence(ConfluencePublish):
+  def wiki(self):
+    return confluence # wiki target defined above
+  def api(self):
+    return 'confluence2' # Older confluence installations use older API
+
+goal(
+  name='confluence',
+  action=OurConfluence,
+  dependencies=['markdown']
+).install().with_description('Publish one or more confluence pages.')

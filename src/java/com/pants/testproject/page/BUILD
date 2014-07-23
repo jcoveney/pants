@@ -4,4 +4,11 @@
 page(name="readme",
      source="README.md",
      dependencies=['src/java/com/pants/examples/hello/main:readme'],
+       provides=[
+           wiki_artifact(wiki=pants('//:confluence'),
+	         space='ENG',
+		       title='Linker',
+		             parent='Examples',
+			         )
+]
      )
