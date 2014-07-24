@@ -6,12 +6,12 @@ python_library(
   sources = ['test_base.py'],
   dependencies = [
     pants('3rdparty/python/twitter/commons:twitter.common.collections'),
+    pants('src/python/pants/backend/core/tasks:console_task'),
+    pants('src/python/pants/backend/core/tasks:task'),
     pants('src/python/pants/base:cmd_line_spec_parser'),
     pants('src/python/pants/base:target'),
     pants('src/python/pants/commands:goal'),
     pants('src/python/pants/goal'),
-    pants('src/python/pants/backend/core/tasks:console_task'),
-    pants('src/python/pants/backend/core/tasks:task'),
     pants('tests/python/pants_test/base:context_utils'),
     pants('tests/python/pants_test:base_test'),
   ]
@@ -37,6 +37,7 @@ python_test_suite(
     pants(':filemap'),
     pants(':filter'),
     pants(':group_task'),
+    pants(':ivy_utils'),
     pants(':jar_create'),
     pants(':jar_publish'),
     pants(':jar_task'),
@@ -165,8 +166,8 @@ python_tests(
   sources = ['test_config.py'],
   dependencies = [
     pants(':base'),
-    pants('3rdparty/python/twitter/commons:twitter.common.contextutil'),
     pants('src/python/pants/base:config'),
+    pants('src/python/pants/util:contextutil'),
   ]
 )
 
@@ -278,15 +279,28 @@ python_tests(
   name = 'idea_integration',
   sources = ['test_idea_integration.py'],
   dependencies = [
+    pants('src/python/pants/util:contextutil'),
     pants('tests/python/pants_test:int-test'),
   ],
+)
+
+python_tests(
+  name = 'ivy_utils',
+  sources = ['test_ivy_utils.py'],
+  dependencies = [
+    pants('src/python/pants/backend/core:plugin'),
+    pants('src/python/pants/backend/jvm:plugin'),
+    pants('src/python/pants/backend/jvm:ivy_utils'),
+    pants('src/python/pants/util:contextutil'),
+    pants('tests/python/pants_test:base_test'),
+    pants('tests/python/pants_test/base:context_utils'),
+  ]
 )
 
 python_tests(
   name = 'jar_create',
   sources = ['test_jar_create.py'],
   dependencies = [
-    pants('3rdparty/python/twitter/commons:twitter.common.contextutil'),
     pants(':base'),
     pants('src/python/pants/backend/android/targets:android'),
     pants('src/python/pants/backend/codegen/targets:java'),
@@ -300,6 +314,7 @@ python_tests(
     pants('src/python/pants/base:source_root'),
     pants('src/python/pants/goal:products'),
     pants('src/python/pants/java:jar'),
+    pants('src/python/pants/util:contextutil'),
     pants('src/python/pants/util:dirutil'),
     pants('tests/python/pants_test/base:context_utils'),
     pants('tests/python/pants_test/jvm:jar_task_test_base'),
@@ -313,6 +328,7 @@ python_tests(
     pants('3rdparty/python:mock'),
     pants(':base'),
     pants('src/python/pants/backend/jvm/tasks:jar_publish'),
+    pants('src/python/pants/util:contextutil'),
     pants('src/python/pants/util:dirutil'),
   ],
 )
@@ -321,7 +337,8 @@ python_tests(
   name = 'jar_publish_integration',
   sources = ['test_jar_publish_integration.py'],
   dependencies = [
-    pants('3rdparty/python/twitter/commons:twitter.common.contextutil'),
+    pants(':base'),
+    pants('src/python/pants/util:contextutil'),
     pants('tests/python/pants_test:int-test'),
   ],
 )
@@ -366,8 +383,8 @@ python_tests(
   sources = ['test_protobuf_gen.py'],
   dependencies = [
     pants(':base'),
-    pants('3rdparty/python/twitter/commons:twitter.common.contextutil'),
     pants('src/python/pants/backend/codegen/tasks:protobuf_gen'),
+    pants('src/python/pants/util:contextutil'),
   ],
 )
 
@@ -384,9 +401,9 @@ python_tests(
   sources = ['test_jaxb_gen.py'],
   dependencies = [
     pants(':base'),
-    pants('3rdparty/python/twitter/commons:twitter.common.contextutil'),
     pants('src/python/pants/backend/codegen/tasks:jaxb_gen'),
     pants('src/python/pants/backend/codegen/targets:java'),
+    pants('src/python/pants/util:contextutil'),
   ],
 )
 
@@ -461,11 +478,11 @@ python_tests(
   name = 'jar_task',
   sources = ['test_jar_task.py'],
   dependencies = [
-    pants('3rdparty/python/twitter/commons:twitter.common.contextutil'),
     pants('src/python/pants/backend/jvm/targets:jvm'),
     pants('src/python/pants/backend/jvm/tasks:jar_task'),
     pants('src/python/pants/base:build_file_aliases'),
     pants('src/python/pants/base:source_root'),
+    pants('src/python/pants/util:contextutil'),
     pants('src/python/pants/util:dirutil'),
     pants('tests/python/pants_test/jvm:jvm_tool_task_test_base'),
   ]
@@ -514,8 +531,13 @@ python_tests(
   dependencies = [
     pants(':base'),
     pants('3rdparty/python:mock'),
-    pants('3rdparty/python/twitter/commons:twitter.common.contextutil'),
-    pants('src/python/pants/backend/codegen/tasks:ragel_gen'),
     pants('src/python/pants/backend/codegen/targets:java'),
+    pants('src/python/pants/backend/codegen/tasks:ragel_gen'),
+    pants('src/python/pants/base:address'),
+    pants('src/python/pants/base:build_environment'),
+    pants('src/python/pants/base:build_file_aliases'),
+    pants('src/python/pants/goal'),
+    pants('src/python/pants/util:contextutil'),
+    pants('tests/python/pants_test:base_test'),
   ],
 )
