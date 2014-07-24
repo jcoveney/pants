@@ -28,12 +28,5 @@ jvm_binary(name = 'main-bin',
 # README page:
 
 page(name="readme",
-  source="README.md",
-  provides=[
-    wiki_artifact(wiki=pants('//:confluence'),
-      space='ENG',
-      title='Pants Hello World Example',
-      parent='pants_page',
-    )
-  ])
+  source="README.md")
 
