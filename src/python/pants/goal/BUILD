@@ -96,7 +96,7 @@ python_library(
 
 python_library(
   name = 'run_tracker',
-  sources = ['__init__.py', 'run_tracker.py'],
+  sources = ['run_tracker.py'],
   dependencies = [
     pants(':aggregated_timings'),
     pants(':artifact_cache_stats'),
