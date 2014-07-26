@@ -8,7 +8,7 @@ from __future__ import (nested_scopes, generators, division, absolute_import, wi
 from contextlib import closing
 from StringIO import StringIO
 
-from pants.backend.core.tasks.builddictionary import BuildBuildDictionary, assemble
+from pants.backend.core.tasks import builddictionary
 from pants.base.build_configuration import BuildConfiguration
 from pants.base.build_file_parser import BuildFileParser
 from pants_test.tasks.test_base import TaskTest, prepare_task
@@ -25,7 +25,7 @@ outdir: %s
 class BaseBuildBuildDictionaryTest(TaskTest):
   def execute_task(self, config=sample_ini_test_1):
     with closing(StringIO()) as output:
-      task = prepare_task(BuildBuildDictionary, config=config)
+      task = prepare_task(builddictionary.BuildBuildDictionary, config=config)
       task.execute()
       return output.getvalue()
 
@@ -39,11 +39,15 @@ class BuildBuildDictionaryTestEmpty(BaseBuildBuildDictionaryTest):
 
 
 class ExtractedContentSanityTests(BaseBuildBuildDictionaryTest):
-  def test_invoke_assemble(self):
+  def setUp(self):
     bfp = BuildFileParser(BuildConfiguration(), '.')
-    # we get our doc'able symbols from a BuildFileParser.
-    # Invoke that functionality without blowing up:
-    syms = assemble(build_file_parser=bfp)
+    self._syms = builddictionary.assemble(build_file_parser=bfp)
+    super(ExtractedContentSanityTests, self).setUp()
+
+  def test_exclude_unuseful(self):
     # These symbols snuck into old dictionaries, make sure they don't again:
     for unexpected in ['__builtins__', 'Target']:
-      self.assertTrue(unexpected not in syms.keys(), "Found %s" % unexpected)
+      self.assertTrue(unexpected not in self._syms.keys(), "Found %s" % unexpected)
+
+  def test_exclude_unuseful(self):
+    pass
