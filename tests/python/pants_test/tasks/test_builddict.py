@@ -9,10 +9,12 @@ from contextlib import closing
 from StringIO import StringIO
 
 from pants.backend.core.tasks import builddictionary
+from pants.backend.core.register import build_file_aliases as register_core
+from pants.backend.jvm.register import build_file_aliases as register_jvm
+from pants.backend.python.register import build_file_aliases as register_python
 from pants.base.build_configuration import BuildConfiguration
 from pants.base.build_file_parser import BuildFileParser
-from pants_test.tasks.test_base import TaskTest, prepare_task
-
+from pants_test.tasks.test_base import BaseTest, TaskTest, prepare_task
 
 OUTDIR = "/tmp/dist"
 
@@ -38,16 +40,33 @@ class BuildBuildDictionaryTestEmpty(BaseBuildBuildDictionaryTest):
     self.assertEqual('', self.execute_task())
 
 
-class ExtractedContentSanityTests(BaseBuildBuildDictionaryTest):
+class ExtractedContentSanityTests(BaseTest):
+  @property
+  def alias_groups(self):
+    return register_core().merge(register_jvm().merge(register_python()))
+
   def setUp(self):
-    bfp = BuildFileParser(BuildConfiguration(), '.')
-    self._syms = builddictionary.assemble(build_file_parser=bfp)
     super(ExtractedContentSanityTests, self).setUp()
+    self._syms = builddictionary.assemble(build_file_parser=self.build_file_parser)
 
   def test_exclude_unuseful(self):
     # These symbols snuck into old dictionaries, make sure they don't again:
     for unexpected in ['__builtins__', 'Target']:
       self.assertTrue(unexpected not in self._syms.keys(), "Found %s" % unexpected)
 
-  def test_exclude_unuseful(self):
-    pass
+  def test_sub_tocls(self):
+    for k in self._syms: print(k)
+    python_symbols = builddictionary.python_sub_tocl(self._syms).e
+
+    # python_requirements goes through build_file_aliases.curry_context.
+    # It's in the "Python" sub_tocl, but tenuously
+    for s in python_symbols: print(s)
+    self.assertTrue("python_requirements" in python_symbols)
+
+    # Some less-tenuous sanity checks
+    for sym in ["python_library", "python_tests"]:
+      self.assertTrue(sym in python_symbols)
+
+    jvm_symbols = builddictionary.jvm_sub_tocl(self._syms).e
+    for sym in ["java_library", "scala_library"]:
+      self.assertTrue(sym in jvm_symbols)
