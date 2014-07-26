@@ -17,8 +17,7 @@ from twitter.common.collections import OrderedSet
 from twitter.common.lang import Compatibility
 from twitter.common.log.options import LogOptions
 
-from pants.backend.core.tasks.console_task import ConsoleTask
-from pants.backend.core.tasks.task import Task
+from pants.backend.core.tasks.task import QuietTaskMixin, Task
 from pants.backend.jvm.tasks.nailgun_task import NailgunTask  # XXX(pl)
 from pants.base.build_environment import get_buildroot
 from pants.base.build_file import BuildFile
@@ -229,15 +228,15 @@ class Goal(Command):
         log.init()
 
     # Update the reporting settings, now that we have flags etc.
-    def is_console_task():
+    def is_quiet_task():
       for phase in self.phases:
         for goal in phase.goals():
-          if issubclass(goal.task_type, ConsoleTask):
+          if issubclass(goal.task_type, QuietTaskMixin):
             return True
       return False
 
     is_explain = self.options.explain
-    update_reporting(self.options, is_console_task() or is_explain, self.run_tracker)
+    update_reporting(self.options, is_quiet_task() or is_explain, self.run_tracker)
 
     context = Context(
       self.config,
